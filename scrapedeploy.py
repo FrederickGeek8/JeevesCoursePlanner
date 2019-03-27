@@ -24,8 +24,8 @@ outdir = os.path.abspath(path)
 if scrape:
     call(["sudo", "python", "scraper/albertscraper.py"])
 call(["python", "scraper/courseprocesser.py", "min"])
-call(["python", "scraper/courseflattener.py", "min"])
-call(["python", "scraper/courseindexer.py", "min"])
+# call(["python", "scraper/courseflattener.py", "min"])
+# call(["python", "scraper/courseindexer.py", "min"])
 
 shutil.copy("scraper/out/courses.flat.min.json", outdir + "/courses.flat.json")
 shutil.copy("scraper/out/courses.index.min.json", outdir + "/courses.index.json")

@@ -20,8 +20,8 @@ Calling the script using "python script.py min" will output a json
 file with no indentation.
 """
 DIRNAME   = os.path.dirname(os.path.abspath(__file__)) + "/"
-SOURCEDIR = "spring2018out/raw/"
-OUTPUTDIR = "spring2018out/permajor/"
+SOURCEDIR = "fall2019out/raw/"
+OUTPUTDIR = "fall2019out/permajor/"
 
 # s is a set
 def addWordsToSet(line, s):

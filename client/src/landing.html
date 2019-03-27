@@ -1,7 +1,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Jeeves Course Planner</title>
-	<link rel="stylesheet" type="text/css" href="src/skeleton.css"/>
+	<link rel="stylesheet" type="text/css" href="/src/skeleton.css"/>
 	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 	<style>
 	.doublecolumn {
@@ -32,9 +32,10 @@
   ga('send', 'pageview');
 
 </script>
-<script>document.addEventListener("DOMContentLoaded", init);
+<script>
+document.addEventListener("DOMContentLoaded", init);
 function init() {
-    d3.json("src/majorcodes.json", function (e, d) {
+    d3.json("/src/majorcodes.json", function (e, d) {
         // place all the choices
         var NYUSchools = [];
         for (var key in d) {
@@ -43,6 +44,7 @@ function init() {
             if (it[0] != "UH" && it[0] != "SHU")
                 NYUSchools.push({school:key, codes:it});
         }
+        NYUSchools = [];
         d = NYUSchools;
         d3.select("#loading").remove();
         var container = d3.select("#listcontainer");
@@ -57,7 +59,7 @@ function init() {
         // also append Abu Dhabi and Shanghai at the top.
         var VIP = d3.select("#SHU-AD")
             .selectAll(".buttoncontainer")
-            .data([{school:"NYU Shanghai", codes:["SHU"]}, {school:"NYU Abu Dhabi", codes:["UH"]}])
+            .data([{school:"NYU Shanghai", codes:["SHU"]}])
             .enter()
             .append("div")
             .attr("class", "buttoncontainer");
@@ -93,14 +95,14 @@ function gotoJeeves() {
 <body>
 	<div id="main" class="container">
 		<div class="row">
-			<h2>Jeeves Course Planner: Fall 2017</h2>
+			<h2>Jeeves Course Planner: Fall 2019</h2>
 			<h4>Use Jeeves to rapidly search for courses, and plan your schedule with a calendar view</h4>
 			<h5>Select the schools you wish to choose courses from.</h5>
 		</div>
 		<div>
 			<div id="SHU-AD" class="doublecolumn">
 			</div>
-			<span class="underline">NYU New York: Click to expand</span>
+			<span class="underline" style="display:none;">NYU New York: Click to expand</span>
 			<div class="doublecolumn" style="display:none;" id="listcontainer">
 				<div id="loading">
 					<br>

@@ -20,11 +20,11 @@ While the final result is put into courses.json, a json file is made for
 each major, in out/. 
 """
 
-DIRNAME = os.path.dirname(os.path.abspath(__file__)) + "/spring2018out/raw"
+DIRNAME = os.path.dirname(os.path.abspath(__file__)) + "/fall2019out/raw"
 
 def dumpJson(obj, subdir, fname):
     fname = fname.replace("/", "-").replace("&", " ")
-    with open(DIRNAME + "/" + fname, "w") as f:
+    with open(DIRNAME + "/" + fname, "w+") as f:
         json.dump(obj, f)
 
 #driver = webdriver.Firefox()
@@ -43,11 +43,11 @@ coursesearchlink = WebDriverWait(driver, timeout).until(
     )
 coursesearchlink.click()
 
-driver.switch_to_frame("TargetContent")
+# driver.switch_to_frame("TargetContent")
 
 # We are now in the albert course search.
 checkbox = WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "#NYU_CLS_WRK_NYU_SPRING"))
+        EC.presence_of_element_located((By.CSS_SELECTOR, "#NYU_CLS_WRK_NYU_FALL"))
     ) # selects the semester
 checkbox.click()
 time.sleep(5)
@@ -71,7 +71,7 @@ time.sleep(5)
 
 # On second thought, don't need to select the school.
 selectables = []
-with open("majors.txt") as f:
+with open("majors_shanghai.txt") as f:
     for line in f:
         selectables.append(line.strip())
 
