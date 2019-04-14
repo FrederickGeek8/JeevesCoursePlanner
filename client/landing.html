@@ -1,116 +1,145 @@
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Jeeves Course Planner</title>
-	<link rel="stylesheet" type="text/css" href="/src/skeleton.css"/>
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-	<style>
-	.doublecolumn {
-		-webkit-column-count:2;
-		-moz-column-count:2;
-		column-count:2;
-	}
-	span {
-		font-size: 16px;
-		margin-left: 6px;
-	}
-	.underline {
-		text-decoration: underline;
-	}
-	.underline:hover {
-		color: grey;
-		cursor:pointer;
-	}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Jeeves Course Planner</title>
+    <link rel="stylesheet" type="text/css" href="/src/skeleton.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      .doublecolumn {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+      }
+      span {
+        font-size: 16px;
+        margin-left: 6px;
+      }
+      .underline {
+        text-decoration: underline;
+      }
+      .underline:hover {
+        color: grey;
+        cursor: pointer;
+      }
     </style>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-43675987-3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-43675987-3"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-  gtag('config', 'UA-43675987-3');
-</script>
-<script>
-        document.addEventListener("DOMContentLoaded", init);
-        function init() {
-            d3.json("/src/majorcodes.json", function (e, d) {
-                // place all the choices
-                var NYUSchools = [];
-                for (var key in d) {
-                    if(!d.hasOwnProperty(key)) continue;
-                    var it = d[key];
-                    if (it[0] != "UH" && it[0] != "SHU")
-                        NYUSchools.push({school:key, codes:it});
-                }
-                NYUSchools = [];
-                d = NYUSchools;
-                d3.select("#loading").remove();
-                var container = d3.select("#listcontainer");
-                var divs = container.selectAll(".possibles")
-                    .data(d)
-                    .enter()
-                    .append("div")
-                    .attr("class", "buttoncontainer");
-                divs.append("input").attr("type", "checkbox");
-                divs.append("span")
-                    .text(function (d) { return d.school; });
-                // also append Abu Dhabi and Shanghai at the top.
-                var VIP = d3.select("#SHU-AD")
-                    .selectAll(".buttoncontainer")
-                    .data([{school:"NYU Shanghai", codes:["SHU"]}])
-                    .enter()
-                    .append("div")
-                    .attr("class", "buttoncontainer");
-                VIP.append("input")
-                    .attr("type", "checkbox");
-                VIP.append("span").text(function (d) { return d.school; });
-                d3.select(".container").append("button").text("Go!").on("click", gotoJeeves);
-                d3.select(".underline").on("click", function () {
-                    d3.select("#listcontainer").style("display", null);
-                    d3.select(this).classed(".underline", null).text("NYU New York");
-                });
-            });
-        }
-        function gotoJeeves() {
-            var schools = [];
-            var sel;
-            d3.selectAll("input").each(function (selection) {
-                sel = d3.select(this);
-                if (sel.property("checked")) {
-                    var d = sel.datum();
-                    console.log(d);
-                    var L = sel.datum().codes.length;
-                    for (var i = 0; i < L; i++) {
-                        schools.push(d.codes[i]);
-                    }
-                }
-            });
-            window.localStorage.setItem("schools", JSON.stringify(schools));
-            window.location.assign("src/jeeves.html");
-        }
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js" charset="utf-8"></script>
-</head>
+      gtag("config", "UA-43675987-3");
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", init);
+      function init() {
+        d3.json("/src/majorcodes.json", function(e, d) {
+          // place all the choices
+          var NYUSchools = [];
+          for (var key in d) {
+            if (!d.hasOwnProperty(key)) continue;
+            var it = d[key];
+            if (it[0] != "UH" && it[0] != "SHU")
+              NYUSchools.push({ school: key, codes: it });
+          }
+          NYUSchools = [];
+          d = NYUSchools;
+          d3.select("#loading").remove();
+          var container = d3.select("#listcontainer");
+          var divs = container
+            .selectAll(".possibles")
+            .data(d)
+            .enter()
+            .append("div")
+            .attr("class", "buttoncontainer");
+          divs.append("input").attr("type", "checkbox");
+          divs.append("span").text(function(d) {
+            return d.school;
+          });
+          // also append Abu Dhabi and Shanghai at the top.
+          var VIP = d3
+            .select("#SHU-AD")
+            .selectAll(".buttoncontainer")
+            .data([{ school: "NYU Shanghai", codes: ["SHU"] }])
+            .enter()
+            .append("div")
+            .attr("class", "buttoncontainer");
+          VIP.append("input").attr("type", "checkbox");
+          VIP.append("span").text(function(d) {
+            return d.school;
+          });
+          d3.select(".container")
+            .append("button")
+            .text("Go!")
+            .on("click", gotoJeeves);
+          d3.select(".underline").on("click", function() {
+            d3.select("#listcontainer").style("display", null);
+            d3.select(this)
+              .classed(".underline", null)
+              .text("NYU New York");
+          });
+        });
+      }
+      function gotoJeeves() {
+        var schools = [];
+        var sel;
+        d3.selectAll("input").each(function(selection) {
+          sel = d3.select(this);
+          if (sel.property("checked")) {
+            var d = sel.datum();
+            console.log(d);
+            var L = sel.datum().codes.length;
+            for (var i = 0; i < L; i++) {
+              schools.push(d.codes[i]);
+            }
+          }
+        });
+        window.localStorage.setItem("schools", JSON.stringify(schools));
+        window.location.assign("src/jeeves.html");
+      }
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"
+      charset="utf-8"
+    ></script>
+  </head>
 
-<body>
-	<div id="main" class="container">
-		<div class="row">
-			<h2>Jeeves Course Planner: Fall 2019</h2>
-			<h4>Use Jeeves to rapidly search for courses, and plan your schedule with a calendar view</h4>
-			<h5>Select the schools you wish to choose courses from.</h5>
-		</div>
-		<div>
-			<div id="SHU-AD" class="doublecolumn">
-			</div>
-			<span class="underline" style="display:none;">NYU New York: Click to expand</span>
-			<div class="doublecolumn" style="display:none;" id="listcontainer">
-				<div id="loading">
-					<br>
-					<p>
-						Loading...
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
+  <body>
+    <div id="main" class="container">
+      <div class="row">
+        <h2>Jeeves Course Planner: Fall 2019</h2>
+        <h4>
+          Use Jeeves to rapidly search for courses, and plan your schedule with
+          a calendar view
+        </h4>
+        <h5>Select the schools you wish to choose courses from.</h5>
+      </div>
+      <div>
+        <div id="SHU-AD" class="doublecolumn"></div>
+        <span class="underline" style="display:none;"
+          >NYU New York: Click to expand</span
+        >
+        <div class="doublecolumn" style="display:none;" id="listcontainer">
+          <div id="loading">
+            <br />
+            <p>
+              Loading...
+            </p>
+          </div>
+        </div>
+        <small>Last updated 04/14/2019</small>
+      </div>
+    </div>
+  </body>
+</html>
