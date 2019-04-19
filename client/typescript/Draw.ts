@@ -307,9 +307,9 @@ export class Calendar {
 							if (i == 1) d3.select(this).text(d.text.substr(0, TEXTTRUNLEN));
 						});
 
-		svg.select(".coursearea").selectAll(".classblock").selectAll(".blocktext")
+		svg.select(".coursearea").selectAll(".blocktext")
 				  .attr("transform", function(d){return "translate(" + dayscale(d.time.getDayName()) + "," + timescale(d.time.starttime.toDate()) + ")"; });
-		svg.select(".coursearea").selectAll(".classblock").selectAll(".blocktext")
+		svg.select(".coursearea").selectAll(".blocktext")
 				  .selectAll("text")
 				  .transition()
 					.ease(TTy())
