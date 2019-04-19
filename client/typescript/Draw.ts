@@ -232,7 +232,7 @@ export class Calendar {
 							.attr("width", function(d){return dayscale.rangeBand();})
 							.on("click", function(d,i){removeCourseBlock(d.coursedata, i, calendar);});
 
-		allcourses_enter.selectAll("rect").attr("transform", function(d){return "translate(" + dayscale(d.day) + "," + timescale(d.time.starttime.toDate()) + ")";})
+		svg.select(".coursearea").selectAll("rect").attr("transform", function(d){return "translate(" + dayscale(d.day) + "," + timescale(d.time.starttime.toDate()) + ")";})
 				.transition()
 					.ease(TTy())
 					.duration(TT())
@@ -307,9 +307,9 @@ export class Calendar {
 							if (i == 1) d3.select(this).text(d.text.substr(0, TEXTTRUNLEN));
 						});
 
-		allcourses_enter.selectAll(".blocktext")
+		svg.select(".coursearea").selectAll(".classblock").selectAll(".blocktext")
 				  .attr("transform", function(d){return "translate(" + dayscale(d.time.getDayName()) + "," + timescale(d.time.starttime.toDate()) + ")"; });
-		allcourses_enter.selectAll(".blocktext")
+		svg.select(".coursearea").selectAll(".classblock").selectAll(".blocktext")
 				  .selectAll("text")
 				  .transition()
 					.ease(TTy())
