@@ -20,7 +20,7 @@ While the final result is put into courses.json, a json file is made for
 each major, in out/. 
 """
 
-DIRNAME = os.path.dirname(os.path.abspath(__file__)) + "/fall2019out/raw"
+DIRNAME = os.path.dirname(os.path.abspath(__file__)) + "/spring2020out/raw"
 
 def dumpJson(obj, subdir, fname):
     fname = fname.replace("/", "-").replace("&", " ")
@@ -47,10 +47,10 @@ coursesearchlink.click()
 
 # We are now in the albert course search.
 checkbox = WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "#NYU_CLS_WRK_NYU_FALL"))
+        EC.presence_of_element_located((By.CSS_SELECTOR, "#NYU_CLS_WRK_NYU_SPRING"))
     ) # selects the semester
 checkbox.click()
-time.sleep(5)
+time.sleep(10)
 
 """
     {
