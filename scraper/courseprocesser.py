@@ -127,6 +127,12 @@ def processcourse(course):
         # second line has nothing important.
         # third line has location and component
         flattened = stringFromTags(lines[s+2])
+
+        # check if "Requires Department Consent" has pushed down the line number
+        if flattened[1] == 'l':
+            s += 1
+            flattened = stringFromTags(lines[s+2])
+            
         r = re.search(r"Location: (\w+)", flattened)
         if r:
             component["location"] = r.group(1)
