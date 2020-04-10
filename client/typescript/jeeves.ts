@@ -513,22 +513,6 @@ function addToCourses(code:string, sectionindex:string, sectiondata) {
 	displaySearchResults(true, utility.sanitizeForSelector(code)); // because need to update conflicting classes
 	calendars[active].draw();
 
-	updateURLExport();
-}
-
-/**
- * Updates the base 64 URL export.
- */
-function updateURLExport() {
-	var exportArray = [JSON.parse(window.localStorage.getItem("schools"))];
-	for (var i = 0; i < calendars[active].courses.length; i++) {
-
-		exportArray.push([
-			calendars[active].courses[i].course.name,
-			calendars[active].courses[i].sectionid
-		]);
-	}
-	window.location.hash = btoa(JSON.stringify(exportArray));
 }
 
 //////////////////////////////
@@ -609,7 +593,6 @@ function newcalendar() {
 	Draw.transitionViewTo(calendars.length-1, calendars);
 	active = calendars.length - 1;
 	displaySearchResults(true, undefined);
-	updateURLExport();
 }
 
 /**
@@ -627,7 +610,6 @@ function clonecalendar() {
 	Draw.transitionViewTo(calendars.length-1, calendars);
 	active = calendars.length - 1;
 	displaySearchResults(true, undefined);
-	updateURLExport();
 }
 
 /**
@@ -689,7 +671,6 @@ function scrollleft() {
 	if (active < 0) active = 0;
 	Draw.transitionViewTo(active, calendars);
 	displaySearchResults(true, undefined);
-	updateURLExport();
 }
 
 /**
@@ -700,7 +681,6 @@ function scrollright() {
 	if (active >= calendars.length) active = calendars.length - 1;
 	Draw.transitionViewTo(active, calendars);
 	displaySearchResults(true, undefined);
-	updateURLExport();
 }
 
 /**

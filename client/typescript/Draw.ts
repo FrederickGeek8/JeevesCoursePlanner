@@ -131,6 +131,7 @@ export class Calendar {
 			if (calendars.length == 0){
 				var newcalendar = new Calendar(calendars);
 				updateCreditsTotal(calendars[0]);
+				updateURLExport(calendars[0]);
 			}
 		}, TT());
 	}
@@ -171,6 +172,7 @@ export class Calendar {
 		var timeaxis   = this.timeaxis;
 		var timescale  = this.timescale;
 		updateCreditsTotal(this);
+		updateURLExport(this);
 
 		if (courses.length == 0){
 			// reset axis to original 8 to 6
@@ -347,6 +349,22 @@ export function transitionViewTo(index: number, calendars: Calendar[]) {
 		.attr("viewBox", (index * calendarwidth) + " 0 800 600");
 	d3.select("#calendarname").text(index);
 	updateCreditsTotal(calendars[index]);
+	updateURLExport(calendars[index]);
+}
+
+/**
+ * Updates the base 64 URL export.
+ */
+function updateURLExport(obj:Calendar) {
+	var exportArray = [JSON.parse(window.localStorage.getItem("schools"))];
+	for (var i = 0; i < obj.courses.length; i++) {
+
+		exportArray.push([
+			obj.courses[i].course.name,
+			obj.courses[i].sectionid
+		]);
+	}
+	window.location.hash = btoa(JSON.stringify(exportArray));
 }
 
 /**
