@@ -230,6 +230,8 @@ if __name__ == "__main__":
         for file in files:
             if file == "out-courses.json":
                 continue
+            if os.path.splitext(file)[1] != '.json':
+                continue
             if (os.stat(root + "/" + file).st_size == 0):
                 continue
             print(file)
