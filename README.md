@@ -28,3 +28,8 @@ might want to make a backup of the old one).
 In order to scrape the classes, you then want to run `python albertscraper.py`.
 This will generate raw data from Albert. You can then convert this raw data
 into the format consumed by Jeeves by running `python courseprocesser.py`.
+
+The output of `python courseprocesser.py` will be in `fall2020out/permajor`. For
+Shanghai, you would want to upload `min_SHU_courses.flat.json` to `/courses` on
+the webserver. Afterwards, its good practice to update the "Last updated" code
+on `landing.html`.
