@@ -10,7 +10,6 @@ import time
 import json
 import subprocess
 import os
-
 """
 This file uses Selenium and Firefox Webdriver to scrape all course data for 
 NYU Shanghai from Albert Course Finder into a json file. Further processing
@@ -20,12 +19,15 @@ While the final result is put into courses.json, a json file is made for
 each major, in out/. 
 """
 
-DIRNAME = os.path.dirname(os.path.abspath(__file__)) + "/spring2020out/raw"
+DIRNAME = os.path.dirname(os.path.abspath(__file__)) + "/spring2021out/raw"
+DELAY = 15  # manual delay
+
 
 def dumpJson(obj, subdir, fname):
     fname = fname.replace("/", "-").replace("&", " ")
     with open(DIRNAME + "/" + fname, "w+") as f:
         json.dump(obj, f)
+
 
 #driver = webdriver.Firefox()
 # phantomjs_path = "C:\coding\JeevesCoursePlanner\scraper\phantomjs.exe"
@@ -34,24 +36,22 @@ def dumpJson(obj, subdir, fname):
 driver = webdriver.Chrome()
 
 driver.get("http://albert.nyu.edu/course-finder")
-driver.select = driver.find_element_by_css_selector # too wordy
+driver.select = driver.find_element_by_css_selector  # too wordy
 
 timeout = 30
 
 coursesearchlink = WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Course Search"))
-    )
+    EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Course Search")))
 coursesearchlink.click()
 
 # driver.switch_to_frame("TargetContent")
 
 # We are now in the albert course search.
 checkbox = WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "#NYU_CLS_WRK_NYU_SPRING"))
-    ) # selects the semester
+    EC.presence_of_element_located(
+        (By.CSS_SELECTOR, "#NYU_CLS_WRK_NYU_SPRING")))  # selects the semester
 checkbox.click()
-time.sleep(10)
-
+time.sleep(DELAY)
 """
     {
         "ART-SHU": {
@@ -75,6 +75,15 @@ with open("majors_shanghai.txt") as f:
     for line in f:
         selectables.append(line.strip())
 
+
+def filter_subject(d, subject):
+    elems = d.find_elements_by_partial_link_text(subject.split()[0])
+    for elem in elems:
+        if elem.text.rstrip().replace('\n', ' ') == subject:
+            return elem
+    return False
+
+
 outdict = {}
 for subject in selectables:
     print(subject)
@@ -82,13 +91,14 @@ for subject in selectables:
 
     # Click on the subject link
     try:
-        link = WebDriverWait(driver, timeout).until(
-            EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, subject))
-        )
+        link = WebDriverWait(
+            driver, timeout).until(lambda d: filter_subject(d, subject))
         link.click()
+
         WebDriverWait(driver, timeout).until(
-            EC.presence_of_element_located((By.ID, "NYU_CLS_WRK_DESCR100"))
-        ) # wait for the new page to load
+            EC.presence_of_element_located(
+                (By.ID,
+                 "NYU_CLS_WRK_DESCR100")))  # wait for the new page to load
     except Exception as e:
         driver.save_screenshot('screenshot.png')
         raise e
@@ -98,7 +108,7 @@ for subject in selectables:
         buttonid = button.get_attribute("id")
         if buttonid.startswith("NYU_CLS_DERIVED_TERM"):
             internalid = buttonid.split("$")[1]
-            internalIDs.append(internalid) 
+            internalIDs.append(internalid)
             outdict[subject][internalid] = {}
             # these 'buttonids' are actually used for each subject thing
             # so will be very useful
@@ -106,23 +116,24 @@ for subject in selectables:
     # Get course name
     for ident in internalIDs:
         coursetable = WebDriverWait(driver, timeout).until(
-            EC.presence_of_element_located((By.ID, "win0divNYU_CLS_DERIVED_HTMLAREA$" + ident))
-        )
+            EC.presence_of_element_located(
+                (By.ID, "win0divNYU_CLS_DERIVED_HTMLAREA$" + ident)))
         fulldesc = None
         try:
             desc = coursetable.find_element_by_class_name("courseDescription")
-            courseid = desc.get_attribute("id").split("_")[1] # to find the css id for long desc.
+            courseid = desc.get_attribute("id").split("_")[
+                1]  # to find the css id for long desc.
             coursetable.find_element_by_css_selector("a").click()
             longdesc = WebDriverWait(driver, timeout).until(
-                EC.presence_of_element_located((By.ID, "fullDescription_" + courseid))
-            )
+                EC.presence_of_element_located(
+                    (By.ID, "fullDescription_" + courseid)))
             fulldesc = longdesc.text
         except selenium.common.exceptions.NoSuchElementException:
             fulldesc = coursetable.find_element_by_css_selector("p").text
         outdict[subject][ident]["desc"] = fulldesc
-        outdict[subject][ident]["header"] = coursetable.find_element_by_css_selector("b").text
+        outdict[subject][ident][
+            "header"] = coursetable.find_element_by_css_selector("b").text
 
-        
     # Get expanded table
     for ident in internalIDs:
         button = driver.find_element_by_id("NYU_CLS_DERIVED_TERM$" + ident)
@@ -131,17 +142,18 @@ for subject in selectables:
         tableid = 'ACE_NYU_CLS_DERIVED_TERM$' + ident
         try:
             table = WebDriverWait(driver, timeout).until(
-                        EC.presence_of_element_located((By.ID, tableid))
-                    ) # get the term data
+                EC.presence_of_element_located(
+                    (By.ID, tableid)))  # get the term data
         except TimeoutException as e:
             print("Current: " + tableid)
             print("Retrying...")
-            button = driver.find_element_by_id("NYU_CLS_DERIVED_TERM$" + ident
-                ).find_element_by_css_selector("img")
+            button = driver.find_element_by_id(
+                "NYU_CLS_DERIVED_TERM$" +
+                ident).find_element_by_css_selector("img")
             button.click()
             table = WebDriverWait(driver, timeout).until(
-                        EC.presence_of_element_located((By.ID, tableid))
-                    ) # get the term data
+                EC.presence_of_element_located(
+                    (By.ID, tableid)))  # get the term data
         outdict[subject][ident]["table"] = table.get_attribute("outerHTML")
 
     # intermediate saving
@@ -149,8 +161,8 @@ for subject in selectables:
 
     # Go back to original page
     returnbutton = WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "#win0divNYU_CLS_DERIVED_BACK"))
-    )
+        EC.presence_of_element_located(
+            (By.CSS_SELECTOR, "#win0divNYU_CLS_DERIVED_BACK")))
     returnbutton.click()
 
 print("Exporting to json")
